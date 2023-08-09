@@ -7,26 +7,63 @@ from eralchemy2 import render_er
 
 Base = declarative_base()
 
-class Person(Base):
-    __tablename__ = 'person'
-    # Here we define columns for the table person
-    # Notice that each column is also a normal Python instance attribute.
+class User(Base):
+    __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+    name = Column(String(256), nullable=False)
+    display_name = Column(String(150), nullable=False)
+    email = Column(String(320), nullable=False)
+    password = Column(String(256), nullable=False) 
+    avatar_url = Column(String(	65536), nullable=False) 
+   
 
-class Address(Base):
-    __tablename__ = 'address'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
+class Post(Base):
+    __tablename__  = "post"
     id = Column(Integer, primary_key=True)
-    street_name = Column(String(250))
-    street_number = Column(String(250))
-    post_code = Column(String(250), nullable=False)
-    person_id = Column(Integer, ForeignKey('person.id'))
-    person = relationship(Person)
+    user_id = Column(Integer, ForeignKey("user.id"))
+    user = relationship(User)
+    title = Column(String(500), nullable=False)
+    body = Column(String(3000), nullable=False)
 
-    def to_dict(self):
-        return {}
+
+class Liked_post(Base):
+    __tablename__  = "liked_post"
+    id = Column(Integer, primary_key=True)
+    post_id = Column(Integer, ForeignKey("post.id"))
+    post = relationship(Post)
+    user_id = Column(Integer, ForeignKey("user.id"))
+    user = relationship(User)
+
+
+class Media(Base):
+    __tablename__  = "media"
+    id = Column(Integer, primary_key=True)
+    post_id = Column(Integer, ForeignKey("post.id"))
+    post = relationship(Post)
+    type = Column(String(150), nullable=False)
+
+
+class Comment(Base):
+    __tablename__  = "comment"
+    id = Column(Integer, primary_key=True)
+    post_id = Column(Integer, ForeignKey("post.id"))
+    post = relationship(Post)
+    user_id = Column(Integer, ForeignKey("user.id"))
+    user = relationship(User)
+
+
+class Follower(Base):
+    __tablename__  = "follower"
+    id = Column(Integer, primary_key=True)
+    followed_to = (Integer, ForeignKey("user.id"))
+    followed_by = (Integer, ForeignKey("user.id"))
+    user = relationship(User)
+    user = relationship(User)
+
+
+
+
+
 
 ## Draw from SQLAlchemy base
 try:
